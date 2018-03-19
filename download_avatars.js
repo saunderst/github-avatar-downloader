@@ -1,5 +1,6 @@
 require('dotenv').config()
 var request = require('request');
+var fs = require('fs');
 
 console.log('Welcome to the GitHub Avatar Downloader!');
 
@@ -19,6 +20,10 @@ function getRepoContributors(repoOwner, repoName, cb) {
 getRepoContributors("jquery", "jquery", function(err, result) {
   var contribs = JSON.parse(result);
   contribs.forEach(contrib => {
-    console.log (contrib.avatar_url);
+    downloadImageByURL(contrib.avatar_url, 'avatars/' + contrib.login + '.jpg')
   });
 });
+
+function downloadImageByURL(url, filePath) {
+  request.get(url).pipe(fs.createWriteStream(filePath));
+}
